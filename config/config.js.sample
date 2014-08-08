@@ -1,0 +1,7 @@
+var config = {
+    protocol: 'https',
+    user: '',
+    password: '',
+    loginUrl: 'host.tld/trac/login/xmlrpc'
+
+}

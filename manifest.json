@@ -1,0 +1,34 @@
+{
+  "name" : "SendToTrac",
+  "version" : "0.1",
+  "description" : "This extension send Trello card to Trac.",
+  "permissions": [
+    "http://*/",
+    "https://*/",
+    "<all_urls>"
+  ],
+  "icons" : {
+    "16" : "images/send.png",
+    "48" : "images/send.png",
+    "128" : "images/send.png"
+  },
+  "content_scripts" : [
+    {
+      "matches" : [
+         "http://*/*",
+         "https://*/*"
+      ],
+      "js" : [
+        "js/jquery-1.11.1.min.js",
+        "js/jquery.xmlrpc.min.js",
+        "config/config.js",
+        "js/send.js"
+      ],
+      "run_at" : "document_idle",
+      "all_frames" : false
+    }
+  ],
+  "browser_action": {
+  },
+  "manifest_version": 2
+}
