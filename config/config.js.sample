@@ -1,7 +1,13 @@
 var config = {
+    // agileTrac = false
+    agileTrac: true,
+    baseUrl: 'host.tld/trac/',
     protocol: 'https',
     user: '',
     password: '',
-    loginUrl: 'host.tld/trac/login/xmlrpc'
+    // trello key
+    key: 'xxxx',
+    // trello token
+    token: 'xxxx'
 
 }
