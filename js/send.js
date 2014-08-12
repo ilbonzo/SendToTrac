@@ -58,7 +58,7 @@ var app = {
                         <a style="float: right" data-trac-role="close">X</a>\
                         <form>\
                             <label for="milestone-trac">Milestone</label>\
-                            <select name="milestone-trac">\
+                            <select style="width: 200px" name="milestone-trac">\
                             ' + milestoneOptions + '\
                             </select>\
                             ' + iteration + '\
