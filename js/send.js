@@ -4,70 +4,91 @@ var app = {
         var self = this;
         this.getActiveMilestones(function (data) {
             $(window).ready(function () {
-                // append button
-                self.appendButton(data);
 
-                $('[data-trac-role="open"]').on('click', function (event) {
-                    event.preventDefault();
-                    $(this).next().slideDown();
-                });
-
-                $('[data-trac-role="close"]').on('click', function (event) {
-                    event.preventDefault();
-                    $(this).parent().slideUp();
-                });
-
-                $('[data-trac-role="send"]').on('click', function (event) {
-                    event.preventDefault();
-                    var info;
-                    var $el = $(this);
-                    $el.hide();
-                    var formValue = self.getFormValue(this);
-                    var shortId = $(this).data('trac-cardid');
-                    self.getCardInfo(shortId, function (data) {
-                        if (config.agileTrac) {
-                            self.sendCardAgile(data.id, data.idBoard, formValue, $el);
-                        } else {
-                            info = self.convertResponse(data);
-                            self.sendCardXmlRpc(info, formValue, $el);
-                        }
+                var attr = window.location.pathname.split('/');
+                if (attr[1] === 'c') {
+                    $(document).ready(function () {
+                        self.appendButton(data);
                     });
+                }
+
+                $(window.location).on('changeLocation', function () {
+                    var attr = window.location.pathname.split('/');
+                    if (attr[1] === 'c') {
+                        $(document).ready(function () {
+                            self.appendButton(data);
+                        });
+                    }
                 });
+
             });
         });
     },
 
     appendButton: function (milestones) {
-        $('.list-card').each(function() {
-            $this = $(this);
-            var href = $this.find('a.list-card-title').attr('href');
-            var attr = href.split('/');
-            var iteration = '';
-            var milestoneOptions = new Array();
-            for (var i = 0; i < milestones.length; i++) {
-                milestoneOptions.push('<option value="' + milestones[i] + '">' + milestones[i] + '</option>');
-            }
-            if (config.agileTrac) {
-                iteration = '<label for="iteration-trac">Iteration</label>\
-                            <input name="iteration-trac" />';
-            }
-            $this.before('\
-                <div style="background-color: #ccc; padding: 5px;">\
-                    <a style="text-decoration: none" data-trac-role="open" href="#">SendToTrac</a>\
-                    <div data-trac-role="form-card" style="display:none">\
-                        <a style="float: right" data-trac-role="close">X</a>\
-                        <form>\
-                            <label for="milestone-trac">Milestone</label>\
-                            <select style="width: 200px" name="milestone-trac">\
-                            ' + milestoneOptions + '\
-                            </select>\
-                            ' + iteration + '\
-                            <a style="background-url: gray;float: right" data-trac-role="send" data-trac-cardid="' + attr[2] + '">send</a>\
-                            <br/>\
-                        </form>\
-                    </div>\
+        var self = this;
+        self.removeButton();
+        var attr = window.location.pathname.split('/');
+        var shortId = attr[2];
+        var iteration = '';
+        var milestoneOptions = new Array();
+        for (var i = 0; i < milestones.length; i++) {
+            milestoneOptions.push('<option value="' + milestones[i] + '">' + milestones[i] + '</option>');
+        }
+        if (config.agileTrac) {
+            iteration = '<label for="iteration-trac">Iteration</label>\
+                        <input style="width: 130px" name="iteration-trac" />';
+        }
+        $('.window-sidebar').append('\
+            <div class="window-module" data-trac-role="content">\
+                <a class="button-link" data-trac-role="open" href="#">SendToTrac</a>\
+                <div data-trac-role="form-card" style="display:none">\
+                    <a style="float: right" data-trac-role="close">X</a>\
+                    <form>\
+                        <label for="milestone-trac">Milestone</label>\
+                        <select style="width: 130px" name="milestone-trac">\
+                        ' + milestoneOptions + '\
+                        </select>\
+                        ' + iteration + '\
+                        <a style="background-url: gray;float: right" data-trac-role="send" data-trac-cardid="' + shortId + '">send</a>\
+                        <br/>\
+                    </form>\
                 </div>\
-            ');
+            </div>\
+        ');
+        self.attachEvent();
+    },
+
+    removeButton: function () {
+        $('[data-trac-role="content"]').remove();
+    },
+
+    attachEvent: function () {
+        $('[data-trac-role="open"]').on('click', function (event) {
+            event.preventDefault();
+            $(this).next().slideDown();
+        });
+
+        $('[data-trac-role="close"]').on('click', function (event) {
+            event.preventDefault();
+            $(this).parent().slideUp();
+        });
+
+        $('[data-trac-role="send"]').on('click', function (event) {
+            event.preventDefault();
+            var info;
+            var $el = $(this);
+            $el.hide();
+            var formValue = self.getFormValue(this);
+            var shortId = $(this).data('trac-cardid');
+            self.getCardInfo(shortId, function (data) {
+                if (config.agileTrac) {
+                    self.sendCardAgile(data.id, data.idBoard, formValue, $el);
+                } else {
+                    info = self.convertResponse(data);
+                    self.sendCardXmlRpc(info, formValue, $el);
+                }
+            });
         });
     },
 
@@ -92,7 +113,6 @@ var app = {
             url: config.protocol + '://' + config.baseUrl + 'trello/activemilestones',
             data: {},
             success: function (response) {
-                console.log(response);
                 var status = callback(response);
             }
         });
@@ -210,3 +230,36 @@ var app = {
 
 // start
 app.init();
+
+
+(function($){
+    var strLocation = window.location.href;
+    var strHash = window.location.hash;
+    var strPrevLocation = "";
+    var strPrevHash = "";
+    var intIntervalTime = 100;
+
+    var fnCleanHash = function(strHash){
+        return(strHash.substring(1, strHash.length));
+    }
+
+    var fnCheckLocation = function(){
+        if (strLocation != window.location.href){
+            strPrevLocation = strLocation;
+            strPrevHash = strHash;
+            strLocation = window.location.href;
+            strHash = window.location.hash;
+            $(window.location).trigger(
+                "changeLocation",
+                {
+                    currentHref: strLocation,
+                    currentHash: fnCleanHash( strHash ),
+                    previousHref: strPrevLocation,
+                    previousHash: fnCleanHash( strPrevHash )
+                }
+            );
+        }
+    }
+    setInterval(fnCheckLocation, intIntervalTime);
+
+})( jQuery );
