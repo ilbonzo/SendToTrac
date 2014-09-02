@@ -8,7 +8,7 @@ var app = {
                 var attr = window.location.pathname.split('/');
                 if (attr[1] === 'c') {
                     $(document).ready(function () {
-                        self.appendButton(data);
+                        setTimeout(self.appendButton(data), 1000);
                     });
                 }
 
@@ -43,14 +43,14 @@ var app = {
             <div class="window-module" data-trac-role="content">\
                 <a class="button-link" data-trac-role="open" href="#">SendToTrac</a>\
                 <div data-trac-role="form-card" style="display:none">\
-                    <a style="float: right" data-trac-role="close">X</a>\
+                    <a class="quiet-button" style="float: right" data-trac-role="close">X</a>\
                     <form>\
                         <label for="milestone-trac">Milestone</label>\
                         <select style="width: 130px" name="milestone-trac">\
                         ' + milestoneOptions + '\
                         </select>\
                         ' + iteration + '\
-                        <a style="background-url: gray;float: right" data-trac-role="send" data-trac-cardid="' + shortId + '">send</a>\
+                        <a class="quiet-button" style="float: right" data-trac-role="send" data-trac-cardid="' + shortId + '">send</a>\
                         <br/>\
                     </form>\
                 </div>\
