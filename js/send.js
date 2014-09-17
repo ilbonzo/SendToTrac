@@ -64,6 +64,7 @@ var app = {
     },
 
     attachEvent: function () {
+        var self = this;
         $('[data-trac-role="open"]').on('click', function (event) {
             event.preventDefault();
             $(this).next().slideDown();
