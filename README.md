@@ -28,6 +28,7 @@ Edit config.js with your data.
     }
 
 Load the checkout folder how unpack extension in Chrome.
+https://developer.chrome.com/extensions/getstarted#unpacked
 
 
 ### Screenshot
